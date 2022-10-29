@@ -13,9 +13,11 @@ namespace Models
         public Guid UserId { get; set; }
         public string Text { get; set; }
         public string ImagePath { get; set; }
-        public int MyProperty { get; set; }
         public int Rating { get; set; }
         public DateTime DateOfCreation { get; set; }
-        public DateTime ExpirationDate { get; set; }
+        public DateTime ExpirationDate
+        {
+            get => new(DateOfCreation.Year, DateOfCreation.Month, DateOfCreation.Day + 7);
+        }
     }
 }
