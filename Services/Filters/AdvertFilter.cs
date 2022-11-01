@@ -1,13 +1,12 @@
-﻿using Models.ModelsDb;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models
+namespace Services.Filters
 {
-    public class Advert
+    public class AdvertFilter
     {
         public Guid? Id { get; set; }
         public int Number { get; set; }
@@ -15,11 +14,9 @@ namespace Models
         public string Text { get; set; }
         public string ImagePath { get; set; }
         public int Rating { get; set; }
-        public DateTime DateOfCreation { get; set; }
-        public DateTime ExpirationDate
-        {
-            get => new(DateOfCreation.Year, DateOfCreation.Month, DateOfCreation.Day + 7);
-        }
-        public User user { get; set; }
+        public DateTime? DateOfCreation { get; set; }
+        public DateTime? ExpirationDate { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
     }
 }

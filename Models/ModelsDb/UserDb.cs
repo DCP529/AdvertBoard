@@ -9,7 +9,7 @@ namespace Models.ModelsDb
     {
         [Key]
         [Column("id")]
-        public Guid? id { get; set; }
+        public Guid? Id { get; set; }
 
         [Column("name")]
         public string Name { get; set; }
