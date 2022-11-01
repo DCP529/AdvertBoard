@@ -163,7 +163,11 @@ namespace Services
 
                     if (getAdvert == null)
                     {
-                        var mapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<Advert, AdvertDb>());
+                        var mapperConfig = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<Advert, AdvertDb>();
+                            cfg.CreateMap<User, UserDb>();
+                        });
 
                         var mapper = new Mapper(mapperConfig);
 
