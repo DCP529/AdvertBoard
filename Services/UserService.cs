@@ -131,7 +131,11 @@ namespace Services
 
                     if (getUser == null)
                     {
-                        var mapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<User, UserDb>());
+                        var mapperConfig = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<User, UserDb>();
+                            cfg.CreateMap<Advert, AdvertDb>();
+                        });
 
                         var mapper = new Mapper(mapperConfig);
 
