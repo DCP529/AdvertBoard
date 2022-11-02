@@ -42,9 +42,9 @@ namespace Services
                     query = query.Where(x => x.Id == advertFilter.Id);
                 }
 
-                if (advertFilter.Image != null)
+                if (advertFilter.ImagePath != null)
                 {
-                    query = query.Where(x => x.ImageName == advertFilter.Image);
+                    query = query.Where(x => x.ImageName == advertFilter.ImagePath);
                 }
 
                 if (advertFilter.UserId != Guid.Empty)
