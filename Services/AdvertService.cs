@@ -36,7 +36,7 @@ namespace Services
             {
                 var query = _advertsBoard.Adverts.Select(x => x);
 
-                if (advertFilter.Id != Guid.Empty)
+                if (advertFilter.Id != null && advertFilter.Id != Guid.Empty)
                 {
                     query = query.Where(x => x.Id == advertFilter.Id);
                 }
@@ -81,11 +81,7 @@ namespace Services
                     query = query.Skip((advertFilter.PageNumber - 1) * advertFilter.PageSize).Take(advertFilter.PageSize);
                 }
 
-                var mapperConfig = new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<UserDb, User>();
-                    cfg.CreateMap<AdvertDb, Advert>();
-                });
+                var mapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<AdvertDb, Advert>());
 
                 var mapper = new Mapper(mapperConfig);
 
