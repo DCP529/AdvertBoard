@@ -36,7 +36,7 @@ namespace Services
             {
                 var query = _advertsBoard.Users.Select(x => x);
 
-                if (userFilter.Id != Guid.Empty)
+                if (userFilter.Id != Guid.Empty && userFilter.Id != Guid.Empty)
                 {
                     query = query.Where(x => x.Id == userFilter.Id);
                 }
@@ -53,6 +53,13 @@ namespace Services
                     query = query.Skip((userFilter.PageNumber - 1) * userFilter.PageSize).Take(userFilter.PageSize);
                 }
 
+                var users = query.ToList();
+
+                foreach (var item in users)
+                {
+                    item.AdvertCollection = _advertsBoard.Adverts.Where(x => x.UserId == item.Id).ToList();
+                }
+
                 var mapperConfig = new MapperConfiguration(cfg =>
                 {
                     cfg.CreateMap<UserDb, User>();
@@ -61,7 +68,7 @@ namespace Services
 
                 var mapper = new Mapper(mapperConfig);
 
-                return mapper.Map<List<User>>(query.ToList());
+                return mapper.Map<List<User>>(users);
             });
         }
 
