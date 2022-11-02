@@ -20,6 +20,10 @@ namespace Models
         {
             get => new(DateOfCreation.Year, DateOfCreation.Month, DateOfCreation.Day + 7);
         }
-        public User user { get; set; }
+
+        public Advert()
+        {
+            DateOfCreation = DateTime.Now;
+        }
     }
 }

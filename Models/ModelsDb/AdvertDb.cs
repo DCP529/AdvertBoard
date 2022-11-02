@@ -18,6 +18,7 @@ namespace Models.ModelsDb
         [Column("number")]
         public int Number { get; set; }
 
+        [ForeignKey(nameof(UserId))]
         [Column("user_id")]
         public Guid UserId { get; set; }
 
@@ -35,9 +36,5 @@ namespace Models.ModelsDb
 
         [Column("expiration_date")]
         public DateTime ExpirationDate { get; set; }
-
-        [ForeignKey(nameof(UserId))]
-        [Column("user")]
-        public UserDb user { get; set; }
     }
 }
