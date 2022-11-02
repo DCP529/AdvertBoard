@@ -15,7 +15,7 @@ namespace Models.Validation
             RuleFor(x => x.UserId).NotNull().NotEmpty();
             RuleFor(x => x.Text).NotNull().NotEmpty();
             RuleFor(x => x.ImageName).NotNull().NotEmpty();
-            RuleFor(x => x.Rating).NotNull().NotEmpty();
+            RuleFor(x => x.Rating).NotNull().NotEmpty().InclusiveBetween(0, 10);
             RuleFor(x => x.DateOfCreation).NotNull().NotEmpty().InclusiveBetween(DateTime.Parse("01.01.2022"), DateTime.Now);
             RuleFor(x => x.ExpirationDate).NotNull().NotEmpty();
         }
