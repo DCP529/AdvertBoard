@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.ModelsDb;
 using Services;
 using Services.Filters;
 using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
@@ -20,96 +21,127 @@ namespace AdvertBoardAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<List<Advert>> GetAdvertsAsync(AdvertFilter advertFilter)
+        public async Task<ActionResult<List<Advert>>> GetAdvertsAsync(AdvertFilter advertFilter)
         {
-            return await _advertService.GetAdvertAsync(advertFilter);
+            var getAdvert = await _advertService.GetAdvertAsync(advertFilter);
+
+            if (getAdvert != null)
+            {
+                return getAdvert;
+            }
+
+            return new BadRequestObjectResult(ModelState);
         }
 
         [HttpGet("GetAdvertByIdAsync")]
-        public async Task<Advert> GetAdvertByIdAsync(Guid advertId)
+        public async Task<ActionResult<Advert>> GetAdvertByIdAsync(Guid advertId)
         {
-            return await _advertService.GetAdvertByIdAsync(advertId);
+            var getAdvert = await _advertService.GetAdvertByIdAsync(advertId);
+
+            if (getAdvert != null)
+            {
+                return getAdvert;
+            }
+
+            return new BadRequestObjectResult(ModelState);
         }
 
         [HttpPost]
-        public async Task AddAdvertAsync(Advert advert)
+        public async Task<IActionResult> AddAdvertAsync(Advert advert)
         {
             await _advertService.AddAsync(advert);
+
+            if (await _advertService.GetAdvertByIdAsync((Guid)advert.Id) != null)
+            {
+                return Ok();
+            }
+
+            return new BadRequestObjectResult(ModelState);
         }
 
         [HttpPut]
-        public async Task UpdateAdvertAsync(Guid advertId, Advert advert)
+        public async Task<IActionResult> UpdateAdvertAsync(Guid advertId, Advert advert)
         {
             await _advertService.UpdateAsync(advertId, advert);
+
+            if (await _advertService.GetAdvertByIdAsync((Guid)advert.Id) == advert)
+            {
+                return Ok();
+            }
+
+            return new BadRequestObjectResult(ModelState);
         }
 
         [HttpDelete]
-        public async Task DeleteAsync(Guid advertId)
+        public async Task<IActionResult> DeleteAsync(Guid advertId)
         {
             await _advertService.DeleteAsync(advertId);
+
+            var getAdvert = await _advertService.GetAdvertAsync(new AdvertFilter() { Id = advertId });
+
+            if (getAdvert.Count != 1)
+            {
+                return Ok();
+            }
+
+            return new BadRequestObjectResult(ModelState);
         }
 
         [HttpPost("AddImageAsync")]
-        public async Task<string> AddImageAsync(Guid advertId, IFormFile fileUpload)
+        public async Task<IActionResult> AddImageAsync(Guid advertId, IFormFile fileUpload)
         {
-            return await Task.Run(async () =>
+            try
             {
-                try
+                if (fileUpload.Length > 0)
                 {
-                    if (fileUpload.Length > 0)
+                    string path = _webHostEvironment.WebRootPath + "\\images\\";
+
+                    if (!Directory.Exists(path))
                     {
-                        string path = _webHostEvironment.WebRootPath + "\\images\\";
-
-                        if (!Directory.Exists(path))
-                        {
-                            Directory.CreateDirectory(path);
-                        }
-
-                        using (FileStream fileStream = System.IO.File.Create(path + fileUpload.FileName))
-                        {
-                            await fileUpload.CopyToAsync(fileStream);
-
-                            await fileStream.FlushAsync();
-
-                            var getAdvert = await _advertService.GetAdvertByIdAsync(advertId);
-
-                            getAdvert.ImageName = path + fileUpload.FileName;
-
-                            await _advertService.UpdateAsync(advertId, getAdvert);
-
-                            return "Image done.";
-                        }
+                        Directory.CreateDirectory(path);
                     }
-                    else
+
+                    using (FileStream fileStream = System.IO.File.Create(path + fileUpload.FileName))
                     {
-                        return "Failed";
+                        await fileUpload.CopyToAsync(fileStream);
+
+                        await fileStream.FlushAsync();
+
+                        var getAdvert = await _advertService.GetAdvertByIdAsync(advertId);
+
+                        getAdvert.ImageName = path + fileUpload.FileName;
+
+                        await _advertService.UpdateAsync(advertId, getAdvert);
+
+                        return Ok();
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    return ex.Message;
+                    return new BadRequestObjectResult(ModelState);
                 }
-            });
+            }
+            catch
+            {
+                return new BadRequestObjectResult(ModelState);
+            }
         }
 
         [HttpGet("GetImageAsync")]
         public async Task<IActionResult> GetImageAsync(Guid advertId)
         {
-            return await Task.Run(async () =>
+            var getAdvert = await _advertService.GetAdvertByIdAsync(advertId);
+
+            var filePath = getAdvert.ImageName;
+
+            if (System.IO.File.Exists(filePath))
             {
-                var getAdvert = await _advertService.GetAdvertByIdAsync(advertId);
+                byte[] reader = System.IO.File.ReadAllBytes(filePath);
 
-                var filePath = getAdvert.ImageName;
+                return File(reader, "image/png");
+            }
 
-                if (System.IO.File.Exists(filePath))
-                {
-                    byte[] reader = System.IO.File.ReadAllBytes(filePath);
-
-                    return File(reader, "image/png");
-                }
-
-                return null;
-            });
+            return new BadRequestObjectResult(ModelState);
         }
     }
 }
