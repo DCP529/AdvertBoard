@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services;
 using Services.Filters;
@@ -11,10 +10,13 @@ namespace AdvertBoardAPI.Controllers
     public class AdvertController : ControllerBase
     {
         private AdvertService _advertService { get; set; }
+        private IWebHostEnvironment _webHostEvironment { get; set; }
 
-        public AdvertController()
+        public AdvertController(IWebHostEnvironment webHostEnvironment)
         {
             _advertService = new AdvertService();
+
+            _webHostEvironment = webHostEnvironment;
         }
 
         [HttpGet]
@@ -47,5 +49,67 @@ namespace AdvertBoardAPI.Controllers
             await _advertService.DeleteAsync(advertId);
         }
 
+        [HttpPost("AddImageAsync")]
+        public async Task<string> AddImageAsync(Guid advertId, IFormFile fileUpload)
+        {
+            return await Task.Run(async () =>
+            {
+                try
+                {
+                    if (fileUpload.Length > 0)
+                    {
+                        string path = _webHostEvironment.WebRootPath + "\\images\\";
+
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+
+                        using (FileStream fileStream = System.IO.File.Create(path + fileUpload.FileName))
+                        {
+                            await fileUpload.CopyToAsync(fileStream);
+
+                            await fileStream.FlushAsync();
+
+                            var getAdvert = await _advertService.GetAdvertByIdAsync(advertId);
+
+                            getAdvert.ImageName = path + fileUpload.FileName;
+
+                            await _advertService.UpdateAsync(advertId, getAdvert);
+
+                            return "Image done.";
+                        }
+                    }
+                    else
+                    {
+                        return "Failed";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return ex.Message;
+                }
+            });
+        }
+
+        [HttpGet("GetImageAsync")]
+        public async Task<IActionResult> GetImageAsync(Guid advertId)
+        {
+            return await Task.Run(async () =>
+            {
+                var getAdvert = await _advertService.GetAdvertByIdAsync(advertId);
+
+                var filePath = getAdvert.ImageName;
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    byte[] reader = System.IO.File.ReadAllBytes(filePath);
+
+                    return File(reader, "image/png");
+                }
+
+                return null;
+            });
+        }
     }
 }

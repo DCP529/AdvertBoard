@@ -25,8 +25,8 @@ namespace Models.ModelsDb
         [Column("text")]
         public string Text { get; set; }
 
-        [Column("image_path")]
-        public string ImagePath { get; set; }
+        [Column("image")]
+        public string ImageName { get; set; }
 
         [Column("rating")]
         public int Rating { get; set; }

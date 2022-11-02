@@ -18,7 +18,7 @@ namespace ValidationsTests
                 Number = 1,
                 UserId = Guid.NewGuid(),
                 Text = "Это новое объявление",
-                ImagePath = @"C:\Users\37377\Desktop\Dex\image.png",
+                Image = @"C:\Users\37377\Desktop\Dex\image.png",
                 Rating = 2,
                 DateOfCreation = DateTime.Parse("22.10.2022")
             };
@@ -44,7 +44,7 @@ namespace ValidationsTests
                 Number = 1,
                 UserId = Guid.Empty,
                 Text = "Это новое объявление",
-                ImagePath = @"C:\Users\37377\Desktop\Dex\image.png",
+                Image = @"C:\Users\37377\Desktop\Dex\image.png",
                 Rating = 2,
                 DateOfCreation = DateTime.Parse("22.10.2022")
             };
