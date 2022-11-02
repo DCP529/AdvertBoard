@@ -38,7 +38,7 @@ namespace ServicesTests
                 Number = 1,
                 UserId = Guid.Parse("c4777863-825f-482d-a3b3-2cb52cd3dfa5"),
                 Text = "Это новое объявление",
-                ImagePath = @"C:\Users\37377\Desktop\Dex\image.png",
+                Image = @"C:\Users\37377\Desktop\Dex\image.png",
                 Rating = 2,
                 DateOfCreation = DateTime.Parse("22.10.2022")
             };

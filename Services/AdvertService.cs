@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.ModelsDb;
@@ -41,9 +42,9 @@ namespace Services
                     query = query.Where(x => x.Id == advertFilter.Id);
                 }
 
-                if (advertFilter.ImagePath != null)
+                if (advertFilter.Image != null)
                 {
-                    query = query.Where(x => x.ImagePath == advertFilter.ImagePath);
+                    query = query.Where(x => x.ImageName == advertFilter.Image);
                 }
 
                 if (advertFilter.UserId != Guid.Empty)
@@ -159,11 +160,7 @@ namespace Services
 
                     if (getAdvert == null)
                     {
-                        var mapperConfig = new MapperConfiguration(cfg =>
-                        {
-                            cfg.CreateMap<Advert, AdvertDb>();
-                            cfg.CreateMap<User, UserDb>();
-                        });
+                        var mapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<Advert, AdvertDb>());
 
                         var mapper = new Mapper(mapperConfig);
 
@@ -181,6 +178,6 @@ namespace Services
             {
                 throw new ValidationException("Данные не корректны для добавления объявления!");
             }
-        }
+        }        
     }
 }
