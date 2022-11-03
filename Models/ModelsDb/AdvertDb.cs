@@ -23,10 +23,10 @@ namespace Models.ModelsDb
         public Guid UserId { get; set; }
 
         [Column("text")]
-        public string Text { get; set; }
+        public string? Text { get; set; }
 
         [Column("image")]
-        public string ImageName { get; set; }
+        public string? ImageName { get; set; }
 
         [Column("rating")]
         public int Rating { get; set; }

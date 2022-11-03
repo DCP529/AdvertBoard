@@ -25,5 +25,29 @@ namespace Models
         {
             DateOfCreation = DateTime.Now;
         }
+
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is null)
+            {
+                return false;
+            }
+            if (!(obj is Advert))
+            {
+                return false;
+            }
+
+            var advert = (Advert)obj;
+
+            return Id == advert.Id
+                && ImageName == advert.ImageName
+                && DateOfCreation == advert.DateOfCreation
+                && ExpirationDate == advert.ExpirationDate
+                && UserId == advert.UserId
+                && Text == advert.Text
+                && Number == advert.Number
+                && Rating == advert.Rating;
+        }
     }
 }

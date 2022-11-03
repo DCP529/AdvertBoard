@@ -51,7 +51,14 @@ namespace AdvertBoardAPI.Controllers
         {
             await _advertService.AddAsync(advert);
 
-            if (await _advertService.GetAdvertByIdAsync((Guid)advert.Id) != null)
+            var getUser = await _advertService.GetAdvertAsync(new AdvertFilter()
+            {
+                UserId = advert.UserId,
+                Text = advert.Text,
+                DateOfCreation = advert.DateOfCreation
+            });
+
+            if (getUser != null)
             {
                 return Ok();
             }
@@ -64,7 +71,9 @@ namespace AdvertBoardAPI.Controllers
         {
             await _advertService.UpdateAsync(advertId, advert);
 
-            if (await _advertService.GetAdvertByIdAsync((Guid)advert.Id) == advert)
+            var getAdvert = await _advertService.GetAdvertByIdAsync(advertId);
+
+            if (getAdvert.Equals(advert))
             {
                 return Ok();
             }
