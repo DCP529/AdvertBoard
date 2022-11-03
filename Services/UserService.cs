@@ -36,7 +36,7 @@ namespace Services
             {
                 var query = _advertsBoard.Users.Select(x => x);
 
-                if (userFilter.Id != Guid.Empty && userFilter.Id != Guid.Empty)
+                if (userFilter.Id != Guid.Empty && userFilter.Id != null)
                 {
                     query = query.Where(x => x.Id == userFilter.Id);
                 }
@@ -46,7 +46,7 @@ namespace Services
                     query = query.Where(x => x.Name == userFilter.Name);
                 }
 
-                query.Where(x => x.IsAdmin == userFilter.IsAdmin);
+                query = query.Where(x => x.IsAdmin == userFilter.IsAdmin);
 
                 if (userFilter.PageNumber != 0 && userFilter.PageSize != 0)
                 {

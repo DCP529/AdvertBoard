@@ -12,7 +12,6 @@ namespace Models.Validation
         public UserValidator()
         {
             RuleFor(x => x.Name).NotNull().NotEmpty();
-            RuleFor(x => x.IsAdmin).NotNull().NotEmpty();
         }
     }
 }

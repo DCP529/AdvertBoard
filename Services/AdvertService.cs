@@ -102,6 +102,8 @@ namespace Services
 
         public async Task UpdateAsync(Guid advertId, Advert advert)
         {
+            advert.Id = advertId;
+
             var validator = new AdvertValidator();
 
             if (validator.Validate(advert).IsValid)
